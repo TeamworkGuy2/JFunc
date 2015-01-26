@@ -1,0 +1,38 @@
+import "commonTemplates/JavaClass.stg"
+
+@JavaClass.importStatements() ::= <<
+import java.util.Objects;
+import java.util.function.Consumer;
+>>
+
+@JavaClass.classJavaDoc() ::= <<
+/** A {@link Consumer\} for $var.type$
+ * @author TeamworkGuy2
+ * @since 2015-1-25
+ */
+>>
+
+@JavaClass.classAnnotations() ::= <<
+@javax.annotation.Generated("StringTemplate")
+@FunctionalInterface
+>>
+
+@JavaClass.code() ::= <<
+	/** Performs an operation on the given argument.
+	 * @param value the $var.type$ argument
+	 */
+	public void accept($var.type$ value);
+
+
+	default $ClassType(var)$ andThen($ClassType(var)$ after) {
+		Objects.requireNonNull(after);
+		return ($var.type$ t) -> {
+			accept(t);
+			after.accept(t);
+		};
+	}
+>>
+
+TConsumer(var) ::= <<
+$JavaClassFromObject("public", "interface", var)$
+>>

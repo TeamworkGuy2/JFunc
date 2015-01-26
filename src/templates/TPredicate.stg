@@ -1,0 +1,47 @@
+import "commonTemplates/JavaClass.stg"
+
+@JavaClass.importStatements() ::= <<
+import java.util.Objects;
+import java.util.function.Predicate;
+>>
+
+@JavaClass.classJavaDoc() ::= <<
+/** A {@link Predicate\} for $var.type$
+ * @author TeamworkGuy2
+ * @since 2015-1-23
+ */
+>>
+
+@JavaClass.classAnnotations() ::= <<
+@javax.annotation.Generated("StringTemplate")
+@FunctionalInterface
+>>
+
+@JavaClass.code() ::= <<
+	/** Check if the $var.type$ meets some condition
+	 * @param value the $var.type$ to check
+	 * @return true if the value fulfills the condition, false if the value does not
+	 */
+	public boolean test($var.type$ value);
+
+
+	default $ClassType(var)$ and($ClassType(var)$ other) {
+		Objects.requireNonNull(other);
+		return (value) -> test(value) && other.test(value);
+	}
+
+
+	default $ClassType(var)$ negate() {
+		return (value) -> !test(value);
+	}
+
+
+	default $ClassType(var)$ or($ClassType(var)$ other) {
+		Objects.requireNonNull(other);
+		return (value) -> test(value) || other.test(value);
+	}
+>>
+
+TPredicate(var) ::= <<
+$JavaClassFromObject("public", "interface", var)$
+>>
