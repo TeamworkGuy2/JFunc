@@ -14,6 +14,6 @@ public interface ShortSupplier {
 	/** Gets a result.
 	 * @return the result short value
 	 */
-	public void getAsShort(short value);
+	public short getAsShort(short value);
 
 }

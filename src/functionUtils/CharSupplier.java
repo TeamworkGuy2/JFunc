@@ -14,6 +14,6 @@ public interface CharSupplier {
 	/** Gets a result.
 	 * @return the result char value
 	 */
-	public void getAsChar(char value);
+	public char getAsChar(char value);
 
 }

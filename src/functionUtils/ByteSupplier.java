@@ -14,6 +14,6 @@ public interface ByteSupplier {
 	/** Gets a result.
 	 * @return the result byte value
 	 */
-	public void getAsByte(byte value);
+	public byte getAsByte(byte value);
 
 }

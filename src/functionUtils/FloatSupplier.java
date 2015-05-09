@@ -14,6 +14,6 @@ public interface FloatSupplier {
 	/** Gets a result.
 	 * @return the result float value
 	 */
-	public void getAsFloat(float value);
+	public float getAsFloat(float value);
 
 }
