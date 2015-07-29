@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 	/** Gets a result.
 	 * @return the result $var.type$ value
 	 */
-	public $var.type$ getAs$var.typeShortUpperCase$($var.type$ value);
+	public $var.type$ getAs$var.typeShortTitleCase$($var.type$ value);
 >>
 
 TSupplier(var) ::= <<
