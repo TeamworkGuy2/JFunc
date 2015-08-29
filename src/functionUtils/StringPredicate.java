@@ -3,7 +3,7 @@ package functionUtils;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-/** A {@link Predicate} for String
+/** A {@link Predicate} for Object
  * @author TeamworkGuy2
  * @since 2015-1-23
  */
@@ -12,11 +12,11 @@ import java.util.function.Predicate;
 public interface StringPredicate {
 
 
-	/** Check if the String meets some condition
-	 * @param value the String to check
+	/** Check if the Object meets some condition
+	 * @param value the Object to check
 	 * @return true if the value fulfills the condition, false if the value does not
 	 */
-	public boolean test(String value);
+	public boolean test(Object value);
 
 
 	default StringPredicate and(StringPredicate other) {

@@ -1,28 +1,22 @@
-import "commonTemplates/JavaClass.stg"
+TSupplier(var) ::= <<
+package functionUtils;
 
-@JavaClass.importStatements() ::= <<
 import java.util.function.Supplier;
->>
 
-@JavaClass.classJavaDoc() ::= <<
-/** A {@link Supplier\} for $var.type$
+/** A {@link Supplier} for $var.type1.type$
  * @author TeamworkGuy2
  * @since 2015-1-25
  */
->>
-
-@JavaClass.classAnnotations() ::= <<
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
->>
+public interface $var.type1.typeShortTitleCase$Supplier {
 
-@JavaClass.code() ::= <<
+
 	/** Gets a result.
-	 * @return the result $var.type$ value
+	 * @return the result $var.type1.type$ value
 	 */
-	public $var.type$ getAs$var.typeShortTitleCase$($var.type$ value);
->>
+	public $var.type1.type$ getAs$var.type1.typeShortTitleCase$($var.type1.type$ value);
 
-TSupplier(var) ::= <<
-$JavaClassFromObject("public", "interface", var)$
+}
+
 >>

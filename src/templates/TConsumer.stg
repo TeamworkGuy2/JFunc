@@ -1,38 +1,32 @@
-import "commonTemplates/JavaClass.stg"
+TConsumer(var) ::= <<
+package functionUtils;
 
-@JavaClass.importStatements() ::= <<
 import java.util.Objects;
 import java.util.function.Consumer;
->>
 
-@JavaClass.classJavaDoc() ::= <<
-/** A {@link Consumer\} for $var.type$
+/** A {@link Consumer} for $var.type1.type$
  * @author TeamworkGuy2
  * @since 2015-1-25
  */
->>
-
-@JavaClass.classAnnotations() ::= <<
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
->>
+public interface $var.type1.typeShortTitleCase$Consumer {
 
-@JavaClass.code() ::= <<
+
 	/** Performs an operation on the given argument.
-	 * @param value the $var.type$ argument
+	 * @param value the $var.type1.type$ argument
 	 */
-	public void accept($var.type$ value);
+	public void accept($var.type1.type$ value);
 
 
-	default $ClassType(var)$ andThen($ClassType(var)$ after) {
+	default $var.type1.typeShortTitleCase$Consumer andThen($var.type1.typeShortTitleCase$Consumer after) {
 		Objects.requireNonNull(after);
-		return ($var.type$ t) -> {
+		return ($var.type1.type$ t) -> {
 			accept(t);
 			after.accept(t);
 		};
 	}
->>
 
-TConsumer(var) ::= <<
-$JavaClassFromObject("public", "interface", var)$
+}
+
 >>

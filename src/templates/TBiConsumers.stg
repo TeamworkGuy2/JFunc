@@ -1,0 +1,31 @@
+import "commonTemplates/JavaClass.stg"
+
+TBiConsumers(classInfo, types) ::= <<
+package functionUtils;
+
+import java.util.function.BiConsumer;
+
+/** {@link BiConsumer} helpers for primitive types
+ * @author TeamworkGuy2
+ * @since 2015-8-24
+ */
+@javax.annotation.Generated("StringTemplate")
+public interface $ClassTypeDefinition(classInfo)$ {
+
+$types:{funcType |
+	@FunctionalInterface
+	public interface $ClassTypeDefinition(funcType.classInfo)$ {
+
+		/** Performs an operation on the given argument.
+		 * @param value1 the $funcType.type1.type$ argument
+		 * @param value2 the $funcType.type2.type$ argument
+		 */
+		public void accept($funcType.type1.type$ value1, $funcType.type2.type$ value2);
+
+	\}
+
+
+}$
+\}
+
+>>

@@ -1,47 +1,44 @@
 import "commonTemplates/JavaClass.stg"
 
-@JavaClass.importStatements() ::= <<
+
+TPredicate(var) ::= <<
+package functionUtils;
+
 import java.util.Objects;
 import java.util.function.Predicate;
->>
 
-@JavaClass.classJavaDoc() ::= <<
-/** A {@link Predicate\} for $var.type$
+/** A {@link Predicate\} for $var.type1.type$
  * @author TeamworkGuy2
  * @since 2015-1-23
  */
->>
-
-@JavaClass.classAnnotations() ::= <<
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
->>
+public interface $ClassTypeDefinition(var.classInfo)$ {
 
-@JavaClass.code() ::= <<
-	/** Check if the $var.type$ meets some condition
-	 * @param value the $var.type$ to check
+
+	/** Check if the $var.type1.type$ meets some condition
+	 * @param value the $var.type1.type$ to check
 	 * @return true if the value fulfills the condition, false if the value does not
 	 */
-	public boolean test($var.type$ value);
+	public boolean test($var.type1.type$ value);
 
 
-	default $ClassType(var)$ and($ClassType(var)$ other) {
+	default $ClassType(var.classInfo)$ and($ClassType(var.classInfo)$ other) {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) && other.test(value);
-	}
+	\}
 
 
-	default $ClassType(var)$ negate() {
+	default $ClassType(var.classInfo)$ negate() {
 		return (value) -> !test(value);
-	}
+	\}
 
 
-	default $ClassType(var)$ or($ClassType(var)$ other) {
+	default $ClassType(var.classInfo)$ or($ClassType(var.classInfo)$ other) {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) || other.test(value);
-	}
->>
+	\}
 
-TPredicate(var) ::= <<
-$JavaClassFromObject("public", "interface", var)$
+\}
+
 >>

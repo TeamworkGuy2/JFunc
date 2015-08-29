@@ -1,0 +1,32 @@
+import "commonTemplates/JavaClass.stg"
+
+TBiFunctions(classInfo, types) ::= <<
+package functionUtils;
+
+import java.util.function.BiFunction;
+
+/** {@link BiFunction} helpers for primitive types
+ * @author TeamworkGuy2
+ * @since 2015-8-24
+ */
+@javax.annotation.Generated("StringTemplate")
+public interface $ClassTypeDefinition(classInfo)$ {
+
+$types:{funcType |
+	@FunctionalInterface
+	public interface $ClassTypeDefinition(funcType.classInfo)$ {
+
+		/** Applies this function to the given arguments.
+		 * @param value1 the first $funcType.type1.type$ argument
+		 * @param value2 the second $funcType.type2.type$ argument
+		 * @return the operation result
+		 */
+		public $funcType.typeReturn.type$ apply($funcType.type1.type$ value1, $funcType.type2.type$ value2);
+
+	\}
+
+
+}$
+\}
+
+>>
