@@ -1,3 +1,5 @@
+import "commonTemplates/JavaClass.stg"
+
 TSupplier(var) ::= <<
 package functionUtils;
 
@@ -9,13 +11,13 @@ import java.util.function.Supplier;
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface $var.type1.typeShortTitleCase$Supplier {
+public interface $var.type1.typeShortTitleCase$Supplier $ClassExtendImplement(var.classInfo)$ {
 
 
 	/** Gets a result.
 	 * @return the result $var.type1.type$ value
 	 */
-	public $var.type1.type$ getAs$var.type1.typeShortTitleCase$($var.type1.type$ value);
+	public $var.type1.type$ getAs$var.type1.typeShortTitleCase$();
 
 }
 

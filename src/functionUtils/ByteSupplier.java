@@ -8,12 +8,12 @@ import java.util.function.Supplier;
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface ByteSupplier {
+public interface ByteSupplier  {
 
 
 	/** Gets a result.
 	 * @return the result byte value
 	 */
-	public byte getAsByte(byte value);
+	public byte getAsByte();
 
 }

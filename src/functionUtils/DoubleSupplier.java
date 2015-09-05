@@ -2,18 +2,18 @@ package functionUtils;
 
 import java.util.function.Supplier;
 
-/** A {@link Supplier} for short
+/** A {@link Supplier} for double
  * @author TeamworkGuy2
  * @since 2015-1-25
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface ShortSupplier  {
+public interface DoubleSupplier extends java.util.function.DoubleSupplier {
 
 
 	/** Gets a result.
-	 * @return the result short value
+	 * @return the result double value
 	 */
-	public short getAsShort();
+	public double getAsDouble();
 
 }

@@ -9,6 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.BiFunction;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleSupplier;
+import java.util.function.Function;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
+import java.util.function.IntSupplier;
+import java.util.function.LongConsumer;
+import java.util.function.LongPredicate;
+import java.util.function.LongSupplier;
 
 import templates.FunctionTypeTmpl;
 import codeTemplate.ClassInfo;
@@ -63,7 +73,40 @@ public class GenerateFunctions {
 	private static GenericTypeInfo genericReturnVal = GenericTypeInfo.of("R", Object.class, true);
 	private static List<GenericTypeInfo> genericParams = Arrays.asList(genericParam1, genericParam2, genericParam3, genericParam4);
 
-	private static List<GenericTypeInfo> oldArgFuncTypes = Arrays.asList(byteTmpl, charTmpl, shortTmpl, floatTmpl);
+	private static List<GenericTypeInfo> oldArgFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl);
+	private static Function<String, List<ClassTemplateBuilder<ClassTemplate>>> consumerImplementTmplBldrs = (classNameTmpl) -> Arrays.asList(
+			ClassTemplateBuilder.of(classNameTmpl), // boolean
+			ClassTemplateBuilder.of(classNameTmpl), // byte
+			ClassTemplateBuilder.of(classNameTmpl), // char
+			ClassTemplateBuilder.of(classNameTmpl), // short
+			ClassTemplateBuilder.of(classNameTmpl).extend(IntConsumer.class), // int
+			ClassTemplateBuilder.of(classNameTmpl), // float
+			ClassTemplateBuilder.of(classNameTmpl).extend(LongConsumer.class), // long
+			ClassTemplateBuilder.of(classNameTmpl).extend(DoubleConsumer.class) // double
+	);
+
+	private static Function<String, List<ClassTemplateBuilder<ClassTemplate>>> supplierImplementTmplBldrs = (classNameTmpl) -> Arrays.asList(
+			ClassTemplateBuilder.of(classNameTmpl), // boolean
+			ClassTemplateBuilder.of(classNameTmpl), // byte
+			ClassTemplateBuilder.of(classNameTmpl), // char
+			ClassTemplateBuilder.of(classNameTmpl), // short
+			ClassTemplateBuilder.of(classNameTmpl).extend(IntSupplier.class), // int
+			ClassTemplateBuilder.of(classNameTmpl), // float
+			ClassTemplateBuilder.of(classNameTmpl).extend(LongSupplier.class), // long
+			ClassTemplateBuilder.of(classNameTmpl).extend(DoubleSupplier.class) // double
+	);
+
+	private static Function<String, List<ClassTemplateBuilder<ClassTemplate>>> predicateImplementTmplBldrs = (classNameTmpl) -> Arrays.asList(
+			ClassTemplateBuilder.of(classNameTmpl), // boolean
+			ClassTemplateBuilder.of(classNameTmpl), // byte
+			ClassTemplateBuilder.of(classNameTmpl), // char
+			ClassTemplateBuilder.of(classNameTmpl), // short
+			ClassTemplateBuilder.of(classNameTmpl).extend(IntPredicate.class), // int
+			ClassTemplateBuilder.of(classNameTmpl), // float
+			ClassTemplateBuilder.of(classNameTmpl).extend(LongPredicate.class), // long
+			ClassTemplateBuilder.of(classNameTmpl).extend(DoublePredicate.class) // double
+	);
+
 	private static List<GenericTypeInfo> primitiveFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl);
 	private static List<GenericTypeInfo> primitiveAnd1GenericFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl, genericParam1);
 	private static List<GenericTypeInfo> primitiveAndReturnFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl, genericReturnVal);
@@ -86,21 +129,21 @@ public class GenerateFunctions {
 	};
 
 	public static void generatePrimitivePredicates() {
-		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Predicate", oldArgFuncTypes, twoTypeNameConverter,
+		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Predicate", oldArgFuncTypes, predicateImplementTmplBldrs.apply("$Type1$Predicate"), twoTypeNameConverter,
 				true, true, Arrays.asList(null, null, null, null), null);
 		TemplateRenders.renderClassTemplateEntries("src/templates/TPredicate.stg", "TPredicate", tmpls);
 	}
 
 
 	public static void generatePrimitiveConsumers() {
-		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Consumer", oldArgFuncTypes, twoTypeNameConverter,
+		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Consumer", oldArgFuncTypes, consumerImplementTmplBldrs.apply("$Type1$Consumer"), twoTypeNameConverter,
 				false, false, Arrays.asList(null, null, null, null), null);
 		TemplateRenders.renderClassTemplateEntries("src/templates/TConsumer.stg", "TConsumer", tmpls);		
 	}
 
 
 	public static void generatePrimitiveSuppliers() {
-		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Supplier", oldArgFuncTypes, twoTypeNameConverter,
+		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Supplier", oldArgFuncTypes, supplierImplementTmplBldrs.apply("$Type1$Supplier"), twoTypeNameConverter,
 				false, false, Arrays.asList(null, null, null, null), null);
 		TemplateRenders.renderClassTemplateEntries("src/templates/TSupplier.stg", "TSupplier", tmpls);
 	}
@@ -126,16 +169,18 @@ public class GenerateFunctions {
 
 
 	public static List<Map.Entry<ClassInfo, FunctionTypeTmpl>> getPrimitiveTemplateInfos(String classNameTmpl, List<? extends GenericTypeInfo> typeEntries,
+			List<? extends ClassTemplateBuilder<? extends ClassTemplate>> tmplBuilders,
 			TriFunc<GenericTypeInfo, GenericTypeInfo, String, String> converter, boolean includeString, boolean includeEnum, List<GenericTypeInfo> types, HasTypeName returnType) {
 		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = new ArrayList<>();
 
+		int i = 0;
 		for(GenericTypeInfo typeEntry : typeEntries) {
 			GenericTypeInfo t1 = types.get(0) != null ? types.get(0) : typeEntry;
 			GenericTypeInfo t2 = types.get(1) != null ? types.get(1) : typeEntry;
 			GenericTypeInfo t3 = types.get(2);
 			GenericTypeInfo t4 = types.get(3);
 			BiFunction<ClassTemplate, String, String> convertFunc = (clsTmpl, str) -> converter.apply(t1, t2, str);
-			ClassTemplateBuilder<ClassTemplate> tmplBldr = ClassTemplateBuilder.of(classNameTmpl, "functionUtils");
+			ClassTemplateBuilder<? extends ClassTemplate> tmplBldr = (tmplBuilders != null ? tmplBuilders.get(i) : ClassTemplateBuilder.of(classNameTmpl)).setPackageName("functionUtils");
 			for(GenericTypeInfo t : types) {
 				if(t != null) {
 					tmplBldr.addTypeParameter(t.getType(), t.getType());
@@ -150,6 +195,7 @@ public class GenerateFunctions {
 				.setType1(t1).setType2(t2).setType3(t3).setType4(t4).setTypeReturn(returnType);
 
 			tmpls.add(new AbstractMap.SimpleImmutableEntry<>(funcTmpl.classInfo, funcTmpl));
+			i++;
 		}
 
 		if(includeString) {

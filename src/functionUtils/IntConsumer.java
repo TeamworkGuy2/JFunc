@@ -3,24 +3,24 @@ package functionUtils;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-/** A {@link Consumer} for char
+/** A {@link Consumer} for int
  * @author TeamworkGuy2
  * @since 2015-1-25
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface CharConsumer  {
+public interface IntConsumer extends java.util.function.IntConsumer {
 
 
 	/** Performs an operation on the given argument.
-	 * @param value the char argument
+	 * @param value the int argument
 	 */
-	public void accept(char value);
+	public void accept(int value);
 
 
-	default CharConsumer andThen(CharConsumer after) {
+	default IntConsumer andThen(IntConsumer after) {
 		Objects.requireNonNull(after);
-		return (char t) -> {
+		return (int t) -> {
 			accept(t);
 			after.accept(t);
 		};

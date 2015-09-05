@@ -1,3 +1,5 @@
+import "commonTemplates/JavaClass.stg"
+
 TConsumer(var) ::= <<
 package functionUtils;
 
@@ -10,7 +12,7 @@ import java.util.function.Consumer;
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface $var.type1.typeShortTitleCase$Consumer {
+public interface $var.type1.typeShortTitleCase$Consumer $ClassExtendImplement(var.classInfo)$ {
 
 
 	/** Performs an operation on the given argument.

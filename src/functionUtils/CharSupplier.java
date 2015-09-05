@@ -8,12 +8,12 @@ import java.util.function.Supplier;
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface CharSupplier {
+public interface CharSupplier  {
 
 
 	/** Gets a result.
 	 * @return the result char value
 	 */
-	public char getAsChar(char value);
+	public char getAsChar();
 
 }

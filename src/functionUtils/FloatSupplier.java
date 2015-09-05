@@ -8,12 +8,12 @@ import java.util.function.Supplier;
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface FloatSupplier {
+public interface FloatSupplier  {
 
 
 	/** Gets a result.
 	 * @return the result float value
 	 */
-	public float getAsFloat(float value);
+	public float getAsFloat();
 
 }

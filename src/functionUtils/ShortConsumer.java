@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  */
 @javax.annotation.Generated("StringTemplate")
 @FunctionalInterface
-public interface ShortConsumer {
+public interface ShortConsumer  {
 
 
 	/** Performs an operation on the given argument.
