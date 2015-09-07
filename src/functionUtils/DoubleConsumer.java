@@ -15,6 +15,7 @@ public interface DoubleConsumer extends java.util.function.DoubleConsumer {
 	/** Performs an operation on the given argument.
 	 * @param value the double argument
 	 */
+	@Override
 	public void accept(double value);
 
 

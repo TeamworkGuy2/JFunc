@@ -54,6 +54,18 @@ public class GenerateFunctions {
 	}
 
 
+	static class FuncClassInfo {
+		GenericTypeInfo typeInfo;
+		boolean isOverride;
+
+		public FuncClassInfo(GenericTypeInfo typeInfo, boolean isOverride) {
+			this.typeInfo = typeInfo;
+			this.isOverride = isOverride;
+		}
+
+	}
+
+
 	private static PrimitiveTypeInfo booleanTmpl = new PrimitiveTypeTemplate(Boolean.TYPE);
 	private static PrimitiveTypeInfo byteTmpl = new PrimitiveTypeTemplate(Byte.TYPE);
 	private static PrimitiveTypeInfo charTmpl = new PrimitiveTypeTemplate(Character.TYPE);
@@ -73,7 +85,17 @@ public class GenerateFunctions {
 	private static GenericTypeInfo genericReturnVal = GenericTypeInfo.of("R", Object.class, true);
 	private static List<GenericTypeInfo> genericParams = Arrays.asList(genericParam1, genericParam2, genericParam3, genericParam4);
 
-	private static List<GenericTypeInfo> oldArgFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl);
+	private static List<FuncClassInfo> oldArgFuncTypes = Arrays.asList(
+			new FuncClassInfo(booleanTmpl, false),
+			new FuncClassInfo(byteTmpl, false),
+			new FuncClassInfo(charTmpl, false),
+			new FuncClassInfo(shortTmpl, false),
+			new FuncClassInfo(intTmpl, true),
+			new FuncClassInfo(floatTmpl, false),
+			new FuncClassInfo(longTmpl, true),
+			new FuncClassInfo(doubleTmpl, true)
+	);
+
 	private static Function<String, List<ClassTemplateBuilder<ClassTemplate>>> consumerImplementTmplBldrs = (classNameTmpl) -> Arrays.asList(
 			ClassTemplateBuilder.of(classNameTmpl), // boolean
 			ClassTemplateBuilder.of(classNameTmpl), // byte
@@ -128,6 +150,7 @@ public class GenerateFunctions {
 				.replace("$ReturnType$", type3 == null || type3.isGeneric() ? "Object" : type3.getTypeShortTitleCase());
 	};
 
+
 	public static void generatePrimitivePredicates() {
 		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = getPrimitiveTemplateInfos("$Type1$Predicate", oldArgFuncTypes, predicateImplementTmplBldrs.apply("$Type1$Predicate"), twoTypeNameConverter,
 				true, true, Arrays.asList(null, null, null, null), null);
@@ -168,15 +191,15 @@ public class GenerateFunctions {
 	}
 
 
-	public static List<Map.Entry<ClassInfo, FunctionTypeTmpl>> getPrimitiveTemplateInfos(String classNameTmpl, List<? extends GenericTypeInfo> typeEntries,
+	public static List<Map.Entry<ClassInfo, FunctionTypeTmpl>> getPrimitiveTemplateInfos(String classNameTmpl, List<? extends FuncClassInfo> typeEntries,
 			List<? extends ClassTemplateBuilder<? extends ClassTemplate>> tmplBuilders,
 			TriFunc<GenericTypeInfo, GenericTypeInfo, String, String> converter, boolean includeString, boolean includeEnum, List<GenericTypeInfo> types, HasTypeName returnType) {
 		List<Map.Entry<ClassInfo, FunctionTypeTmpl>> tmpls = new ArrayList<>();
 
 		int i = 0;
-		for(GenericTypeInfo typeEntry : typeEntries) {
-			GenericTypeInfo t1 = types.get(0) != null ? types.get(0) : typeEntry;
-			GenericTypeInfo t2 = types.get(1) != null ? types.get(1) : typeEntry;
+		for(FuncClassInfo classInfo : typeEntries) {
+			GenericTypeInfo t1 = types.get(0) != null ? types.get(0) : classInfo.typeInfo;
+			GenericTypeInfo t2 = types.get(1) != null ? types.get(1) : classInfo.typeInfo;
 			GenericTypeInfo t3 = types.get(2);
 			GenericTypeInfo t4 = types.get(3);
 			BiFunction<ClassTemplate, String, String> convertFunc = (clsTmpl, str) -> converter.apply(t1, t2, str);
@@ -192,7 +215,7 @@ public class GenerateFunctions {
 
 			ClassTemplate clsTmpl = TemplateNames.inferClassNames(tmplBldr.getTemplate(), convertFunc);
 			FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl)
-				.setType1(t1).setType2(t2).setType3(t3).setType4(t4).setTypeReturn(returnType);
+				.setOverride(classInfo.isOverride).setType1(t1).setType2(t2).setType3(t3).setType4(t4).setTypeReturn(returnType);
 
 			tmpls.add(new AbstractMap.SimpleImmutableEntry<>(funcTmpl.classInfo, funcTmpl));
 			i++;

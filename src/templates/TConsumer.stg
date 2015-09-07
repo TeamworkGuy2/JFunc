@@ -18,7 +18,8 @@ public interface $var.type1.typeShortTitleCase$Consumer $ClassExtendImplement(va
 	/** Performs an operation on the given argument.
 	 * @param value the $var.type1.type$ argument
 	 */
-	public void accept($var.type1.type$ value);
+$if(var.override)$	@Override
+$endif$	public void accept($var.type1.type$ value);
 
 
 	default $var.type1.typeShortTitleCase$Consumer andThen($var.type1.typeShortTitleCase$Consumer after) {

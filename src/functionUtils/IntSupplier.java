@@ -14,6 +14,7 @@ public interface IntSupplier extends java.util.function.IntSupplier {
 	/** Gets a result.
 	 * @return the result int value
 	 */
+	@Override
 	public int getAsInt();
 
 }

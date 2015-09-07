@@ -20,7 +20,8 @@ public interface $ClassTypeDefinition(var.classInfo)$ {
 	 * @param value the $var.type1.type$ to check
 	 * @return true if the value fulfills the condition, false if the value does not
 	 */
-	public boolean test($var.type1.type$ value);
+$if(var.override)$	@Override
+$endif$	public boolean test($var.type1.type$ value);
 
 
 	default $ClassType(var.classInfo)$ and($ClassType(var.classInfo)$ other) {
@@ -29,7 +30,8 @@ public interface $ClassTypeDefinition(var.classInfo)$ {
 	\}
 
 
-	default $ClassType(var.classInfo)$ negate() {
+$if(var.override)$	@Override
+$endif$	default $ClassType(var.classInfo)$ negate() {
 		return (value) -> !test(value);
 	\}
 

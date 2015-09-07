@@ -14,6 +14,7 @@ public interface DoubleSupplier extends java.util.function.DoubleSupplier {
 	/** Gets a result.
 	 * @return the result double value
 	 */
+	@Override
 	public double getAsDouble();
 
 }

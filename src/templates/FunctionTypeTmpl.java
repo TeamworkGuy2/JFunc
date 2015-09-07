@@ -9,6 +9,7 @@ import codeTemplate.HasTypeName;
  */
 public class FunctionTypeTmpl {
 	public ClassInfo classInfo;
+	public boolean override;
 	public HasTypeName type1;
 	public HasTypeName type2;
 	public HasTypeName type3;
@@ -23,12 +24,19 @@ public class FunctionTypeTmpl {
 
 	public FunctionTypeTmpl copy() {
 		FunctionTypeTmpl copy = new FunctionTypeTmpl(this.classInfo);
+		copy.override = this.override;
 		copy.type1 = this.type1;
 		copy.type2 = this.type2;
 		copy.type3 = this.type3;
 		copy.type4 = this.type4;
 		copy.typeReturn = this.typeReturn;
 		return copy;
+	}
+
+
+	public FunctionTypeTmpl setOverride(boolean override) {
+		this.override = override;
+		return this;
 	}
 
 

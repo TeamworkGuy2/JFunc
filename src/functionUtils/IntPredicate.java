@@ -16,6 +16,7 @@ public interface IntPredicate extends java.util.function.IntPredicate {
 	 * @param value the int to check
 	 * @return true if the value fulfills the condition, false if the value does not
 	 */
+	@Override
 	public boolean test(int value);
 
 
@@ -25,6 +26,7 @@ public interface IntPredicate extends java.util.function.IntPredicate {
 	}
 
 
+	@Override
 	default IntPredicate negate() {
 		return (value) -> !test(value);
 	}

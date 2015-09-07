@@ -15,6 +15,7 @@ public interface IntConsumer extends java.util.function.IntConsumer {
 	/** Performs an operation on the given argument.
 	 * @param value the int argument
 	 */
+	@Override
 	public void accept(int value);
 
 

@@ -14,6 +14,7 @@ public interface LongSupplier extends java.util.function.LongSupplier {
 	/** Gets a result.
 	 * @return the result long value
 	 */
+	@Override
 	public long getAsLong();
 
 }

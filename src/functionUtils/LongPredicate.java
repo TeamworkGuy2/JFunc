@@ -16,6 +16,7 @@ public interface LongPredicate extends java.util.function.LongPredicate {
 	 * @param value the long to check
 	 * @return true if the value fulfills the condition, false if the value does not
 	 */
+	@Override
 	public boolean test(long value);
 
 
@@ -25,6 +26,7 @@ public interface LongPredicate extends java.util.function.LongPredicate {
 	}
 
 
+	@Override
 	default LongPredicate negate() {
 		return (value) -> !test(value);
 	}

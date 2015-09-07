@@ -17,7 +17,8 @@ public interface $var.type1.typeShortTitleCase$Supplier $ClassExtendImplement(va
 	/** Gets a result.
 	 * @return the result $var.type1.type$ value
 	 */
-	public $var.type1.type$ getAs$var.type1.typeShortTitleCase$();
+$if(var.override)$	@Override
+$endif$	public $var.type1.type$ getAs$var.type1.typeShortTitleCase$();
 
 }
 

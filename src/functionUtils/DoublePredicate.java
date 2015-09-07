@@ -16,6 +16,7 @@ public interface DoublePredicate extends java.util.function.DoublePredicate {
 	 * @param value the double to check
 	 * @return true if the value fulfills the condition, false if the value does not
 	 */
+	@Override
 	public boolean test(double value);
 
 
@@ -25,6 +26,7 @@ public interface DoublePredicate extends java.util.function.DoublePredicate {
 	}
 
 
+	@Override
 	default DoublePredicate negate() {
 		return (value) -> !test(value);
 	}

@@ -15,6 +15,7 @@ public interface LongConsumer extends java.util.function.LongConsumer {
 	/** Performs an operation on the given argument.
 	 * @param value the long argument
 	 */
+	@Override
 	public void accept(long value);
 
 
