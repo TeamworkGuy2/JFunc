@@ -1,7 +1,7 @@
 import "$commonTemplates.JavaClass$"
 
 TBiFunctions(classInfo, types) ::= <<
-package functionUtils;
+package $classInfo.packageName$;
 
 import java.util.function.BiFunction;
 

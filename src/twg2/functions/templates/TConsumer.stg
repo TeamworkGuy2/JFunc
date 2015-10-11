@@ -1,35 +1,41 @@
 import "$commonTemplates.JavaClass$"
 
-TConsumer(var) ::= <<
-package functionUtils;
+TConsumer(classInfo, types) ::= <<
+package $classInfo.packageName$;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
-/** A {@link Consumer} for $var.type1.type$
+/** {@link Consumer} helper interfaces for primitive types
  * @author TeamworkGuy2
  * @since 2015-1-25
  */
 @javax.annotation.Generated("StringTemplate")
-@FunctionalInterface
-public interface $var.type1.typeShortTitleCase$Consumer $ClassExtendImplement(var.classInfo)$ {
+public interface $ClassTypeDefinition(classInfo)$ {
+
+$types:{var |
+	@FunctionalInterface
+	public interface $var.type1.typeShortTitleCase$ $ClassExtendImplement(var.classInfo)${
+
+		/** Performs an operation on the given argument.
+		 * @param value the $var.type1.type$ argument
+		 */
+$if(var.override)$		@Override
+$endif$		public void accept($var.type1.type$ value);
 
 
-	/** Performs an operation on the given argument.
-	 * @param value the $var.type1.type$ argument
-	 */
-$if(var.override)$	@Override
-$endif$	public void accept($var.type1.type$ value);
+		default $classInfo.className$.$var.type1.typeShortTitleCase$ andThen($classInfo.className$.$var.type1.typeShortTitleCase$ after) {
+			Objects.requireNonNull(after);
+			return ($var.type1.type$ t) -> {
+				accept(t);
+				after.accept(t);
+			\};
+		\}
+
+	\}
 
 
-	default $var.type1.typeShortTitleCase$Consumer andThen($var.type1.typeShortTitleCase$Consumer after) {
-		Objects.requireNonNull(after);
-		return ($var.type1.type$ t) -> {
-			accept(t);
-			after.accept(t);
-		};
-	}
-
+}$
 }
 
 >>
