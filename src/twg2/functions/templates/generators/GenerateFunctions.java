@@ -44,18 +44,14 @@ import twg2.template.codeTemplate.render.TemplateImports;
 public class GenerateFunctions {
 
 	@FunctionalInterface
-	public static interface TriFunc<T1, T2, T3, R> {
-		public R apply(T1 t1, T2 t2, T3 t3);
+	public static interface TransformFuncSignature {
+		public String format(GenericTypeInfo type1, GenericTypeInfo type2, GenericTypeInfo type3, GenericTypeInfo type4, GenericTypeInfo returnType, String templateStr);
 	}
 
-	@FunctionalInterface
-	public static interface QuadFunc<T1, T2, T3, T4, R> {
-		public R apply(T1 t1, T2 t2, T3 t3, T4 t4);
-	}
 
 	@FunctionalInterface
-	public static interface QuinConsumer<T1, T2, T3, T4, T5> {
-		public void accept(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
+	public static interface ConsumeFuncSignature {
+		public void accept(GenericTypeInfo type1, GenericTypeInfo type2, GenericTypeInfo type3, GenericTypeInfo type4, GenericTypeInfo returnType);
 	}
 
 
@@ -142,27 +138,20 @@ public class GenerateFunctions {
 	private static List<GenericTypeInfo> primitiveAnd1GenericFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl, genericParam1);
 	private static List<GenericTypeInfo> primitiveAndReturnFuncTypes = Arrays.asList(booleanTmpl, byteTmpl, charTmpl, shortTmpl, intTmpl, floatTmpl, longTmpl, doubleTmpl, genericReturnVal);
 
-	private static BiFunction<GenericTypeInfo, String, String> oneTypeNameConverter = (type, str) -> {
-		return str.replace("$Type1$", type.isGeneric() ? "Object" : type.getTypeShortTitleCase());
-	};
-
-	private static TriFunc<GenericTypeInfo, GenericTypeInfo, String, String> twoTypeNameConverter = (type1, type2, str) -> {
-		return str
-				.replace("$Type1$", type1.isGeneric() ? "Object" : type1.getTypeShortTitleCase())
-				.replace("$Type2$", type2.isGeneric() ? "Object" : type2.getTypeShortTitleCase());
-	};
-
-	private static QuadFunc<GenericTypeInfo, GenericTypeInfo, GenericTypeInfo, String, String> twoTypeReturnNameConverter = (type1, type2, type3, str) -> {
+	private static TransformFuncSignature funcSignatureConverter = (type1, type2, type3, type4, typeReturn, str) -> {
 		return str
 				.replace("$Type1$", type1 == null || type1.isGeneric() ? "Object" : type1.getTypeShortTitleCase())
 				.replace("$Type2$", type2 == null || type2.isGeneric() ? "Object" : type2.getTypeShortTitleCase())
-				.replace("$ReturnType$", type3 == null || type3.isGeneric() ? "Object" : type3.getTypeShortTitleCase());
+				.replace("$Type3$", type3 == null || type3.isGeneric() ? "Object" : type3.getTypeShortTitleCase())
+				.replace("$Type4$", type4 == null || type4.isGeneric() ? "Object" : type4.getTypeShortTitleCase())
+				.replace("$ReturnType$", typeReturn == null || typeReturn.isGeneric() ? "Object" : typeReturn.getTypeShortTitleCase());
 	};
 
 
 	public static void generatePrimitivePredicates() {
-		List<FunctionTypeTmpl> tmpls = getPrimitiveTemplateInfos("$Type1$", oldArgFuncTypes, predicateImplementTmplBldrs.apply("$Type1$"), twoTypeNameConverter,
-				true, true, Arrays.asList(null, null, null, null), null);
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$")
+				.getPrimitiveTemplateInfos(oldArgFuncTypes, predicateImplementTmplBldrs.apply("$Type1$"), funcSignatureConverter, true, true, Arrays.asList(null, null, null, null), null);
 		ClassInfo clsInfo = ClassTemplateBuilder.of("Predicates", pkgName).getTemplate();
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TPredicate.stg", "TPredicate", importsMapper);
 		renderFuncTmpls(stTmpl, clsInfo, tmpls);
@@ -170,8 +159,9 @@ public class GenerateFunctions {
 
 
 	public static void generatePrimitiveConsumers() {
-		List<FunctionTypeTmpl> tmpls = getPrimitiveTemplateInfos("$Type1$", oldArgFuncTypes, consumerImplementTmplBldrs.apply("$Type1$"), twoTypeNameConverter,
-				false, false, Arrays.asList(null, null, null, null), null);
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$")
+				.getPrimitiveTemplateInfos(oldArgFuncTypes, consumerImplementTmplBldrs.apply("$Type1$"), funcSignatureConverter, false, false, Arrays.asList(null, null, null, null), null);
 		ClassInfo clsInfo = ClassTemplateBuilder.of("Consumers", pkgName).getTemplate();
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TConsumer.stg", "TConsumer", importsMapper);
 		renderFuncTmpls(stTmpl, clsInfo, tmpls);
@@ -179,35 +169,52 @@ public class GenerateFunctions {
 
 
 	public static void generatePrimitiveSuppliers() {
-		List<FunctionTypeTmpl> tmpls = getPrimitiveTemplateInfos("$Type1$", oldArgFuncTypes, supplierImplementTmplBldrs.apply("$Type1$"), twoTypeNameConverter,
-				false, false, Arrays.asList(null, null, null, null), null);
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$")
+				.getPrimitiveTemplateInfos(oldArgFuncTypes, supplierImplementTmplBldrs.apply("$Type1$"), funcSignatureConverter, false, false, Arrays.asList(null, null, null, null), null);
 		ClassInfo clsInfo = ClassTemplateBuilder.of("Suppliers", pkgName).getTemplate();
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TSupplier.stg", "TSupplier", importsMapper);
 		renderFuncTmpls(stTmpl, clsInfo, tmpls);
 	}
 
 
-	// Bi-functions
-	public static void generatePrimitiveBiConsumers() {
-		List<FunctionTypeTmpl> tmpls = getBiPrimitiveTemplateInfos(pkgName, "$Type1$$Type2$", primitiveFuncTypes, null, 2, genericParams, twoTypeReturnNameConverter);
-		ClassInfo clsInfo = ClassTemplateBuilder.of("BiConsumers", pkgName).getTemplate();
-		ST stTmpl = STTemplates.fromFile(tmplDir + "TBiConsumers.stg", "TBiConsumers", importsMapper);
-		renderFuncTmpls(stTmpl, clsInfo, tmpls);
-	}
-
-
 	public static void generatePrimitiveFunctions() {
-		List<FunctionTypeTmpl> tmpls = getBiPrimitiveTemplateInfos(pkgName, "$Type1$Return$ReturnType$", primitiveAnd1GenericFuncTypes, primitiveAndReturnFuncTypes, 1, genericParams, twoTypeReturnNameConverter);
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$Return$ReturnType$")
+				.getBiPrimitiveTemplateInfos(primitiveAnd1GenericFuncTypes, primitiveAndReturnFuncTypes, false, 1, genericParams, funcSignatureConverter);
 		ClassInfo clsInfo = ClassTemplateBuilder.of("Functions", pkgName).getTemplate();
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TFunctions.stg", "TFunctions", importsMapper);
 		renderFuncTmpls(stTmpl, clsInfo, tmpls);
 	}
 
 
+	// Bi-functions
+	public static void generatePrimitiveBiConsumers() {
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$$Type2$")
+				.getBiPrimitiveTemplateInfos(primitiveFuncTypes, null, false, 2, genericParams, funcSignatureConverter);
+		ClassInfo clsInfo = ClassTemplateBuilder.of("BiConsumers", pkgName).getTemplate();
+		ST stTmpl = STTemplates.fromFile(tmplDir + "TBiConsumers.stg", "TBiConsumers", importsMapper);
+		renderFuncTmpls(stTmpl, clsInfo, tmpls);
+	}
+
+
 	public static void generatePrimitiveBiFunctions() {
-		List<FunctionTypeTmpl> tmpls = getBiPrimitiveTemplateInfos(pkgName, "$Type1$$Type2$Return$ReturnType$", primitiveFuncTypes, primitiveAndReturnFuncTypes, 2, genericParams, twoTypeReturnNameConverter);
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$$Type2$Return$ReturnType$")
+				.getBiPrimitiveTemplateInfos(primitiveFuncTypes, primitiveAndReturnFuncTypes, false, 2, genericParams, funcSignatureConverter);
 		ClassInfo clsInfo = ClassTemplateBuilder.of("BiFunctions", pkgName).getTemplate();
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TBiFunctions.stg", "TBiFunctions", importsMapper);
+		renderFuncTmpls(stTmpl, clsInfo, tmpls);
+	}
+
+
+	public static void generatePrimitiveBiPredicates() {
+		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
+				.pkgAndClassNameTemplate(pkgName, "$Type1$$Type2$")
+				.getBiPrimitiveTemplateInfos(primitiveFuncTypes, primitiveAndReturnFuncTypes, true, 2, genericParams, funcSignatureConverter);
+		ClassInfo clsInfo = ClassTemplateBuilder.of("BiPredicates", pkgName).getTemplate();
+		ST stTmpl = STTemplates.fromFile(tmplDir + "TBiPredicate.stg", "TBiPredicate", importsMapper);
 		renderFuncTmpls(stTmpl, clsInfo, tmpls);
 	}
 
@@ -220,114 +227,133 @@ public class GenerateFunctions {
 	}
 
 
-	public static List<FunctionTypeTmpl> getPrimitiveTemplateInfos(String classNameTmpl, List<? extends FuncClassInfo> typeEntries,
-			List<? extends ClassTemplateBuilder<? extends ClassTemplate>> tmplBuilders,
-			TriFunc<GenericTypeInfo, GenericTypeInfo, String, String> converter, boolean includeString, boolean includeEnum, List<GenericTypeInfo> types, HasTypeName returnType) {
-		List<FunctionTypeTmpl> tmpls = new ArrayList<>();
 
-		int i = 0;
-		for(FuncClassInfo classInfo : typeEntries) {
-			GenericTypeInfo t1 = types.get(0) != null ? types.get(0) : classInfo.typeInfo;
-			GenericTypeInfo t2 = types.get(1) != null ? types.get(1) : classInfo.typeInfo;
-			GenericTypeInfo t3 = types.get(2);
-			GenericTypeInfo t4 = types.get(3);
-			BiFunction<ClassTemplate, String, String> convertFunc = (clsTmpl, str) -> converter.apply(t1, t2, str);
-			ClassTemplateBuilder<? extends ClassTemplate> tmplBldr = (tmplBuilders != null ? tmplBuilders.get(i) : ClassTemplateBuilder.of(classNameTmpl)).setPackageName("twg2.functions");
-			for(GenericTypeInfo t : types) {
-				if(t != null) {
-					tmplBldr.addTypeParameter(t.getType(), t.getType());
-				}
-			}
-			if(returnType != null) {
-				tmplBldr.addTypeParameter(returnType.getType(), returnType.getType());
-			}
-
-			ClassTemplate clsTmpl = TemplateNames.inferClassNames(tmplBldr.getTemplate(), convertFunc);
-			FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl)
-				.setOverride(classInfo.isOverride).setType1(t1).setType2(t2).setType3(t3).setType4(t4).setTypeReturn(returnType);
-
-			tmpls.add(funcTmpl);
-			i++;
-		}
-
-		if(includeString) {
-			ClassTemplateBuilder<PrimitiveTypeClassTemplate> stringInfo = new ClassTemplateBuilder<>(new PrimitiveTypeClassTemplate(), classNameTmpl, "twg2.functions");
-			stringInfo.getTemplate().type = "String";
-			stringInfo.getTemplate().typeShort = "String";
-			stringInfo.getTemplate().typeShortTitleCase = "String";
-			stringInfo.addImportStatement(ThreadPoolExecutor.class);
-			ClassTemplate clsTmpl = TemplateNames.inferClassNames(stringInfo.getTemplate(), (clsInfo, str) -> oneTypeNameConverter.apply(stringTmpl, str));
-			FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl).setType1(objectTmpl);
-
-			tmpls.add(funcTmpl);
-		}
-
-		if(includeEnum) {
-			ClassTemplateBuilder<PrimitiveTypeClassTemplate> enumInfo = new ClassTemplateBuilder<>(new PrimitiveTypeClassTemplate(), classNameTmpl, "twg2.functions");
-			enumInfo.addTypeParameter("T", "T extends Enum<T>");
-			enumInfo.getTemplate().type = "T";
-			enumInfo.getTemplate().typeShort = "Enum";
-			enumInfo.getTemplate().typeShortTitleCase = "Enum";
-			ClassTemplate clsTmpl = TemplateNames.inferClassNames(enumInfo.getTemplate(), (clsInfo, str) -> oneTypeNameConverter.apply(enumTmpl, str));
-			FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl).setType1(genericEnumParam);
-
-			tmpls.add(funcTmpl);
-		}
-
-		return tmpls;
-	}
+	public static class TemplateInfosBuilder {
+		private String packageName;
+		private String classNameTmpl;
 
 
-	public static List<FunctionTypeTmpl> getBiPrimitiveTemplateInfos(String packageName, String classNameTmpl,
-			List<? extends GenericTypeInfo> types, List<? extends GenericTypeInfo> returnTypes, int paramCount,
-			List<? extends GenericTypeInfo> genericParams, QuadFunc<GenericTypeInfo, GenericTypeInfo, GenericTypeInfo, String, String> converter) {
-		boolean hasReturnType = returnTypes != null && returnTypes.size() > 0;
+		public List<FunctionTypeTmpl> getPrimitiveTemplateInfos(List<? extends FuncClassInfo> typeEntries,
+				List<? extends ClassTemplateBuilder<? extends ClassTemplate>> tmplBuilders,
+				TransformFuncSignature converter, boolean includeString, boolean includeEnum, List<GenericTypeInfo> types, HasTypeName returnType) {
+			List<FunctionTypeTmpl> tmpls = new ArrayList<>();
 
-		List<FunctionTypeTmpl> combos = new ArrayList<>();
-		// unused
-		List<String> classNames = new ArrayList<>();
-
-		QuinConsumer<GenericTypeInfo, GenericTypeInfo, GenericTypeInfo, GenericTypeInfo, GenericTypeInfo> addFuncImpls = (param1, param2, param3, param4, retType) -> {
-			int genericParamCount = (isGeneric(param1) ? 1 : 0) + (isGeneric(param2) ? 1 : 0) + (isGeneric(param3) ? 1 : 0) + (isGeneric(param4) ? 1 : 0);
-			List<Entry<String, String>> classParams = new ArrayList<>();
-			for(int i = 0; i < genericParamCount; i++) {
-				GenericTypeInfo param = genericParams.get(i);
-				addIf(param, classParams);
-			}
-			addIf(retType, classParams);
-
-			// for each primitive type combo, generate two interfaces: 1 with the primitive type first arg and 1 with the primitive type as the second arg
-			ClassTemplate classInfo1 = ClassTemplateBuilder.of(classNameTmpl, packageName).addTypeParameters(classParams).getTemplate();
-			TemplateNames.inferClassNames(classInfo1, (clsInfo, str) -> converter.apply(param1, param2, retType, str));
-			combos.add(new FunctionTypeTmpl(classInfo1).setType1(param1).setType2(param2).setType3(param3).setType4(param4).setTypeReturn(retType));
-			classNames.add(classInfo1.getClassName());
-		};
-
-		for(GenericTypeInfo param1 : types) {
-			if(hasReturnType) {
-				for(GenericTypeInfo returnType : returnTypes) {
-					if(paramCount > 1) {
-						addFuncImpls.accept(param1, genericParams.get(0), null, null, returnType);
-						addFuncImpls.accept(genericParams.get(0), param1, null, null, returnType);
-					}
-					else {
-						addFuncImpls.accept(param1, null, null, null, returnType);
+			int i = 0;
+			for(FuncClassInfo classInfo : typeEntries) {
+				GenericTypeInfo t1 = types.get(0) != null ? types.get(0) : classInfo.typeInfo;
+				GenericTypeInfo t2 = types.get(1) != null ? types.get(1) : classInfo.typeInfo;
+				GenericTypeInfo t3 = types.get(2);
+				GenericTypeInfo t4 = types.get(3);
+				BiFunction<ClassTemplate, String, String> convertFunc = (clsTmpl, str) -> converter.format(t1, t2, t3, t4, null, str);
+				ClassTemplateBuilder<? extends ClassTemplate> tmplBldr = (tmplBuilders != null ? tmplBuilders.get(i) : ClassTemplateBuilder.of(classNameTmpl)).setPackageName(packageName);
+				for(GenericTypeInfo t : types) {
+					if(t != null) {
+						tmplBldr.addTypeParameter(t.getType(), t.getType());
 					}
 				}
+				if(returnType != null) {
+					tmplBldr.addTypeParameter(returnType.getType(), returnType.getType());
+				}
+
+				ClassTemplate clsTmpl = TemplateNames.inferClassNames(tmplBldr.getTemplate(), convertFunc);
+				FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl)
+					.setOverride(classInfo.isOverride).setType1(t1).setType2(t2).setType3(t3).setType4(t4).setTypeReturn(returnType);
+
+				tmpls.add(funcTmpl);
+				i++;
 			}
-			else {
-				if(paramCount > 1) {
-					addFuncImpls.accept(param1, genericParams.get(0), null, null, null);
-					addFuncImpls.accept(genericParams.get(0), param1, null, null, null);
+
+			if(includeString) {
+				ClassTemplateBuilder<PrimitiveTypeClassTemplate> stringInfo = new ClassTemplateBuilder<>(new PrimitiveTypeClassTemplate(), classNameTmpl, packageName);
+				stringInfo.getTemplate().type = "String";
+				stringInfo.getTemplate().typeShort = "String";
+				stringInfo.getTemplate().typeShortTitleCase = "String";
+				stringInfo.addImportStatement(ThreadPoolExecutor.class);
+				ClassTemplate clsTmpl = TemplateNames.inferClassNames(stringInfo.getTemplate(), (clsInfo, str) -> funcSignatureConverter.format(stringTmpl, null, null, null, null, str));
+				FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl).setType1(objectTmpl);
+
+				tmpls.add(funcTmpl);
+			}
+
+			if(includeEnum) {
+				ClassTemplateBuilder<PrimitiveTypeClassTemplate> enumInfo = new ClassTemplateBuilder<>(new PrimitiveTypeClassTemplate(), classNameTmpl, packageName);
+				enumInfo.addTypeParameter("T", "T extends Enum<T>");
+				enumInfo.getTemplate().type = "T";
+				enumInfo.getTemplate().typeShort = "Enum";
+				enumInfo.getTemplate().typeShortTitleCase = "Enum";
+				ClassTemplate clsTmpl = TemplateNames.inferClassNames(enumInfo.getTemplate(), (clsInfo, str) -> funcSignatureConverter.format(enumTmpl, null, null, null, null, str));
+				FunctionTypeTmpl funcTmpl = new FunctionTypeTmpl(clsTmpl).setType1(genericEnumParam);
+
+				tmpls.add(funcTmpl);
+			}
+
+			return tmpls;
+		}
+
+
+		public List<FunctionTypeTmpl> getBiPrimitiveTemplateInfos(List<? extends GenericTypeInfo> types, List<? extends GenericTypeInfo> returnTypes, boolean staticReturnType, int paramCount,
+				List<? extends GenericTypeInfo> genericParams, TransformFuncSignature converter) {
+			boolean hasReturnType = returnTypes != null && returnTypes.size() > 0 && !staticReturnType;
+
+			List<FunctionTypeTmpl> combos = new ArrayList<>();
+			// unused
+			List<String> classNames = new ArrayList<>();
+
+			ConsumeFuncSignature addFuncImpls = (param1, param2, param3, param4, retType) -> {
+				int genericParamCount = (isGeneric(param1) ? 1 : 0) + (isGeneric(param2) ? 1 : 0) + (isGeneric(param3) ? 1 : 0) + (isGeneric(param4) ? 1 : 0);
+				List<Entry<String, String>> classParams = new ArrayList<>();
+				for(int i = 0; i < genericParamCount; i++) {
+					GenericTypeInfo param = genericParams.get(i);
+					addIf(param, classParams);
+				}
+				addIf(retType, classParams);
+
+				// for each primitive type combo, generate two interfaces: 1 with the primitive type first arg and 1 with the primitive type as the second arg
+				ClassTemplate classInfo1 = ClassTemplateBuilder.of(classNameTmpl, packageName).addTypeParameters(classParams).getTemplate();
+				TemplateNames.inferClassNames(classInfo1, (clsInfo, str) -> converter.format(param1, param2, param3, param4, retType, str));
+				combos.add(new FunctionTypeTmpl(classInfo1).setType1(param1).setType2(param2).setType3(param3).setType4(param4).setTypeReturn(retType));
+				classNames.add(classInfo1.getClassName());
+			};
+
+			GenericTypeInfo returnType0 = returnTypes != null && returnTypes.size() > 0 && staticReturnType ? returnTypes.get(0) : null;
+
+			for(GenericTypeInfo param1 : types) {
+				if(hasReturnType) {
+					for(GenericTypeInfo returnType : returnTypes) {
+						if(paramCount > 1) {
+							addFuncImpls.accept(param1, genericParams.get(0), null, null, returnType);
+							addFuncImpls.accept(genericParams.get(0), param1, null, null, returnType);
+						}
+						else {
+							addFuncImpls.accept(param1, null, null, null, returnType);
+						}
+					}
 				}
 				else {
-					addFuncImpls.accept(param1, null, null, null, null);
+					if(paramCount > 1) {
+						addFuncImpls.accept(param1, genericParams.get(0), null, null, returnType0);
+						addFuncImpls.accept(genericParams.get(0), param1, null, null, returnType0);
+					}
+					else {
+						addFuncImpls.accept(param1, null, null, null, returnType0);
+					}
 				}
 			}
+
+			return combos;
 		}
 
-		return combos;
+
+		public static TemplateInfosBuilder pkgAndClassNameTemplate(String pkgName, String classNameTmpl) {
+			TemplateInfosBuilder inst = new TemplateInfosBuilder();
+			inst.classNameTmpl = classNameTmpl;
+			inst.packageName = pkgName;
+			return inst;
+		}
+
 	}
+
+
 
 
 	public static boolean isGeneric(GenericTypeInfo obj) {
@@ -350,10 +376,12 @@ public class GenerateFunctions {
 
 
 	public static void main(String[] args) throws IOException {
+		//TemplateFilesIo.setGlobalWriteFilesFlag(false);
 		generatePrimitivePredicates();
 		generatePrimitiveSuppliers();
 		generatePrimitiveConsumers();
 		generatePrimitiveFunctions();
+		generatePrimitiveBiPredicates();
 		generatePrimitiveBiConsumers();
 		generatePrimitiveBiFunctions();
 	}
