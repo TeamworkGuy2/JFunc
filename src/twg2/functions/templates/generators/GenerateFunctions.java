@@ -223,7 +223,7 @@ public class GenerateFunctions {
 		Map<String, Object> args = new HashMap<>();
 		args.put("classInfo", classInfo);
 		args.put("types", subTemplates);
-		StringTemplatesUtil.renderClassTemplateArgs(stTmpl, classInfo, args);
+		StringTemplatesUtil.renderClassArgs(stTmpl, classInfo, args);
 	}
 
 
