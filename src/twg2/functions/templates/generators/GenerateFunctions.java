@@ -383,7 +383,7 @@ public class GenerateFunctions {
 		generatePrimitiveFunctions();
 		generatePrimitiveBiPredicates();
 		generatePrimitiveBiConsumers();
-		generatePrimitiveBiFunctions();
+		//generatePrimitiveBiFunctions();
 	}
 
 }
