@@ -31,7 +31,7 @@ public class SimplePropertyAccessor<E> implements PropertyAccessor<E> {
 	}
 
 
-	public static <_E> SimplePropertyAccessor<_E> of(Supplier<_E> getter, Consumer<_E> setter) {
+	public static <E1> SimplePropertyAccessor<E1> of(Supplier<E1> getter, Consumer<E1> setter) {
 		return new SimplePropertyAccessor<>(getter, setter);
 	}
 

@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 public interface $ClassTypeDefinition(classInfo)$ {
 
 $types:{var |
+
 	@FunctionalInterface
 	public interface $var.type1.typeShortTitleCase$ $ClassExtendImplement(var.classInfo)${
-
 
 		/** Gets a result.
 		 * @return the result $var.type1.type$ value

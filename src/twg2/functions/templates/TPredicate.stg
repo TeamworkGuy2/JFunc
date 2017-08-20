@@ -1,52 +1,44 @@
 import "$commonTemplates.JavaClass$"
 
-
-TPredicate(classInfo, types) ::= <<
-package $classInfo.packageName$;
+TPredicate(var) ::= <<
+package $var.classInfo.packageName$;
 
 import java.util.Objects;
 import java.util.function.Predicate;
 
-/** {@link Predicate\} helper interfaces for primitive types
+/** $var.type1.type$ {@link Predicate\} interface
  * @author TeamworkGuy2
  * @since 2015-1-23
  */
 @javax.annotation.Generated("StringTemplate")
-public interface $ClassTypeDefinition(classInfo)$ {
+@FunctionalInterface
+public interface $ClassTypeDefinition(var.classInfo)$ {
 
-$types:{var | 
-	@FunctionalInterface
-	public interface $ClassTypeDefinition(var.classInfo)$ {
-
-		/** Check if the $var.type1.type$ meets some condition
-		 * @param value the $var.type1.type$ to check
-		 * @return true if the value fulfills the condition, false if the value does not
-		 */
+	/** Check if the $var.type1.type$ meets some condition
+	 * @param value the $var.type1.type$ to check
+	 * @return true if the value fulfills the condition, false if the value does not
+	 */
 $if(var.override)$	@Override
-$endif$		public boolean test($var.type1.type$ value);
+$endif$	public boolean test($var.type1.type$ value);
 
 
-		default $classInfo.className$.$ClassType(var.classInfo)$ and($classInfo.className$.$ClassType(var.classInfo)$ other) {
-			Objects.requireNonNull(other);
-			return (value) -> test(value) && other.test(value);
-		\}
-
-
-$if(var.override)$	@Override
-$endif$		default $classInfo.className$.$ClassType(var.classInfo)$ negate() {
-			return (value) -> !test(value);
-		\}
-
-
-		default $classInfo.className$.$ClassType(var.classInfo)$ or($classInfo.className$.$ClassType(var.classInfo)$ other) {
-			Objects.requireNonNull(other);
-			return (value) -> test(value) || other.test(value);
-		\}
-
+	default $ClassType(var.classInfo)$ and($ClassType(var.classInfo)$ other) {
+		Objects.requireNonNull(other);
+		return (value) -> test(value) && other.test(value);
 	\}
 
 
-}$
+$if(var.override)$	@Override
+$endif$	default $ClassType(var.classInfo)$ negate() {
+		return (value) -> !test(value);
+	\}
+
+
+	default $ClassType(var.classInfo)$ or($ClassType(var.classInfo)$ other) {
+		Objects.requireNonNull(other);
+		return (value) -> test(value) || other.test(value);
+	\}
+
 \}
 
 >>
