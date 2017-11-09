@@ -4,19 +4,28 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.0](N/A) - 2017-08-20
+### [0.4.0](N/A) - 2017-11-09
+#### Changed
+* Flattened `twg2.functions.IoFunc` nested functions into separate files: `BiConsumerIo`, `BiFunctionIo`, `ConsumerIo`, `FunctionIo`, and `SupplierIo`
+
+#### Fixed
+* `twg2.functions.predicates` `String` and `Enum` class names fixed to `StringPredicate` and `EnumPredicate`
+
+
+--------
+### [0.3.0](https://github.com/TeamworkGuy2/JFunc/commit/055a39772450f412ff237069d367a913c8923ebd) - 2017-08-20
 #### Added
 * new `twg2.functions.consumers` package containing the interfaces that were previously nested inside `twg2.functions.Consumers`
 * new `twg2.functions.predicates` package containing the interfaces that were previously nested inside `twg2.functions.Predicates`
 
 #### Removed
-Removed unused interfaces, kept generators in place incase there is a use for these interfaces in future.
-* BiConsumers
-* BiPredicates
-* Consumers (split and moved to twg2.functions.consumers)
-* Functions
-* Predicates (split and moved to twg2.functions.predicates)
-* Suppliers
+Removed unused `twg2.functions` interfaces, kept generators in place incase there is a use for these interfaces in future.
+* `BiConsumers`
+* `BiPredicates`
+* `Consumers` (split and moved to `twg2.functions.consumers`)
+* `Functions`
+* `Predicates` (split and moved to `twg2.functions.predicates`)
+* `Suppliers`
 
 
 --------

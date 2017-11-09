@@ -1,6 +1,6 @@
 JFunc
 ==============
-version: 0.3.0
+version: 0.4.0
 
 Symmetric set of interfaces for java.util.function, including Tri-functions and primitive consumers and predicates.
 Useful for simplifying type signatures by converting generic types like `Consumer<Short>` to `ShortConsumer`.

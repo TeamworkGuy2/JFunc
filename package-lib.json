@@ -1,5 +1,5 @@
 {
-	"version" : "0.3.0",
+	"version" : "0.4.0",
 	"name" : "jfunc",
 	"description" : "Filler interfaces for missing or difficult to use java.util.function types. Includes primitive consumers, suppliers, and predicates",
 	"homepage" : "https://github.com/TeamworkGuy2/JFunc",

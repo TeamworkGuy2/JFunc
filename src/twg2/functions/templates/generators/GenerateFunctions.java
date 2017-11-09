@@ -150,7 +150,7 @@ public class GenerateFunctions {
 
 	public static void generatePrimitivePredicates() {
 		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
-				.pkgAndClassNameTemplate(pkgName + ".predicates", "$Type1$")
+				.pkgAndClassNameTemplate(pkgName + ".predicates", "$Type1$Predicate")
 				.getPrimitiveTemplateInfos(primitiveFuncInfos, predicatesImplementing.apply("$Type1$Predicate"), funcSignatureConverter, true, true, Arrays.asList(null, null, null, null), null);
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TPredicate.stg", "TPredicate", importsMapper);
 
@@ -164,7 +164,7 @@ public class GenerateFunctions {
 
 	public static void generatePrimitiveConsumers() {
 		List<FunctionTypeTmpl> tmpls = TemplateInfosBuilder
-				.pkgAndClassNameTemplate(pkgName + ".consumers", "$Type1$")
+				.pkgAndClassNameTemplate(pkgName + ".consumers", "$Type1$Consumer")
 				.getPrimitiveTemplateInfos(primitiveFuncInfos, consumersImplementing.apply("$Type1$Consumer"), funcSignatureConverter, false, false, Arrays.asList(null, null, null, null), null);
 		ST stTmpl = STTemplates.fromFile(tmplDir + "TConsumer.stg", "TConsumer", importsMapper);
 
