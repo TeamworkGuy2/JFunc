@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.4.0](N/A) - 2017-11-09
+### [0.5.0](N/A) - 2019-03-30
+#### Changed
+* Fixed `SupplierIo<T, R>` signature to `SupplierIo<R>` (remove unused type parameter 'R')
+* Update to Java 9 (define required modules in `.classpath`)
+
+
+--------
+### [0.4.0](https://github.com/TeamworkGuy2/JFunc/commit/089efeeeac03d594e6af3495e36343d07cba0747) - 2017-11-09
 #### Changed
 * Flattened `twg2.functions.IoFunc` nested functions into separate files: `BiConsumerIo`, `BiFunctionIo`, `ConsumerIo`, `FunctionIo`, and `SupplierIo`
 

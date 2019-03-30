@@ -8,11 +8,11 @@ import java.util.function.Supplier;
  * @since 2016-1-27
  */
 @FunctionalInterface
-public interface SupplierIo<T, R> {
+public interface SupplierIo<T> {
 
 	/** {@link Supplier#get()} that can throw {@link IOException}
 	 * @return a result
 	 * @throws IOException
 	 */
-	public R get() throws IOException;
+	public T get() throws IOException;
 }

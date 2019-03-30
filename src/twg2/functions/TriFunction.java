@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-
 /** Represents a function that accepts three arguments and produces a result.
  * This is a three-arity specialization of {@link Function}.
  * <p>This is a <a href="java.lang.function/package-summary.html">functional interface</a>
